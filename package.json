@@ -7,7 +7,7 @@
     "webpack": "webpack",
     "watch": "webpack-dev-server"
   },
-  "author": "Dani Akash S",
+  "author": "Zineeddine998",
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^3.3.7",
