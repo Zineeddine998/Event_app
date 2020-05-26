@@ -1,119 +1,165 @@
 import './general';
-import apiCall from "./services/api/apiCall";
-import Chart from "chart.js"
-class Status{
+import apiCall from './services/api/apiCall';
+
+import Chart from 'chart.js';
+
+class Status {
     constructor() {
-        this.loadData();
         this.$experienceTab = document.querySelector('#experienceTab');
         this.$professionTab = document.querySelector('#professionTab');
         this.$ageTab = document.querySelector('#ageTab');
-        this.$ageCanvas = document.querySelector('#ageCanvas');
-        this.$professionCanvas = document.querySelector('#professionCanvas');
-        this.$experienceCanvas = document.querySelector('#experienceCanvas');
+
+        this.$ageCanvas = document.querySelector('#ageChart');
+        this.$professionCanvas = document.querySelector('#professionChart');
+        this.$experienceCanvas = document.querySelector('#experienceChart');
+
         this.$loadingIndicator = document.querySelector('#loadingIndicator');
         this.$tabArea = document.querySelector('#tabArea');
         this.$chartArea = document.querySelector('#chartArea');
-        this.$errorMessage= document.querySelector('#errorMessage');
-        this.$statisticData = document.querySelector('#statisticData');
+
+        this.$errorMessage = document.querySelector('#loadingError');
+
+        this.statisticData;
+        this.loadData();
+        this.addEventListeners();
     }
-    loadData(){
-        apiCall('statistics').then(response =>{
-            this.statisticsData = response;
-            this.$loadingIndicator.classList.add('hidden');
-            this.$tabArea.classList.remove('hidden');
-            this.$chartArea.classList.remove('hidden');
-            this.loadAge();
-            this.loadExperience();
-            this.loadProfession();
-        })
+
+    loadData() {
+        apiCall('statistics')
+            .then(response => {
+                this.statisticData = response;
+
+                this.$loadingIndicator.classList.add('hidden');
+                this.$tabArea.classList.remove('hidden');
+                this.$chartArea.classList.remove('hidden');
+
+                this.loadExperience();
+            })
             .catch(() => {
                 this.$loadingIndicator.classList.add('hidden');
                 this.$errorMessage.classList.remove('hidden');
-            })
+            });
     }
-    loadExperience(){
+
+    hideCharts() {
+        this.$experienceTab.parentElement.classList.remove('active');
+        this.$professionTab.parentElement.classList.remove('active');
+        this.$ageTab.parentElement.classList.remove('active');
+        this.$ageCanvas.classList.add('hidden');
+        this.$professionCanvas.classList.add('hidden');
+        this.$experienceCanvas.classList.add('hidden');
+    }
+
+    addEventListeners() {
+        this.$experienceTab.addEventListener('click', this.loadExperience.bind(this));
+        this.$professionTab.addEventListener('click', this.loadProfession.bind(this));
+        this.$ageTab.addEventListener('click', this.loadAge.bind(this));
+    }
+
+    loadExperience(event = null) {
+        if(event) event.preventDefault();
+        this.hideCharts();
+        this.$experienceCanvas.classList.remove('hidden');
+        this.$experienceTab.parentElement.classList.add('active');
         const data = {
-            datasets : [{
-                data : this.statisticsData.experience,
+            datasets: [{
+                data: this.statisticData.experience,
                 backgroundColor:[
-                    'rgba(255,99,132,0.6)',
-                    'rgba(54,162,235,0.6)',
-                    'rgba(255,206,86,0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(25, 206, 99, 0.6)',
                 ],
-                borderColor :[
+                borderColor: [
+                    'white',
                     'white',
                     'white',
                     'white',
                 ]
             }],
-            labels:[
+            labels: [
                 'Beginner',
                 'Intermediate',
-                'Advanced'
+                'Advanced',
+                'Rockstar'
             ]
         };
         new Chart(this.$experienceCanvas,{
-            type:'pie',
+            type: 'pie',
             data,
         });
     }
-    loadProfession(){
+
+    loadProfession(event = null) {
+        if(event) event.preventDefault();
+        this.hideCharts();
+        this.$professionCanvas.classList.remove('hidden');
+        this.$professionTab.parentElement.classList.add('active');
         const data = {
-            datasets : [{
-                data : this.statisticsData.profession,
+            datasets: [{
+                data: this.statisticData.profession,
                 backgroundColor:[
-                    'rgba(255,99,132,0.6)',
-                    'rgba(255,206,86,0.6)',
-                    'rgba(54,162,235,0.6)',
-                    'rgba(75,192,192,0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
                 ],
-                borderColor :[
+                borderColor: [
                     'white',
                     'white',
                     'white',
                     'white',
                 ]
             }],
-            labels:[
-                'School Student',
-                'College Student',
-                'Trainee',
-                'Employee',
+            labels: [
+                'School Students',
+                'College Students',
+                'Trainees',
+                'Employees'
             ]
         };
         new Chart(this.$professionCanvas,{
-            type:'pie',
+            type: 'pie',
             data,
         });
     }
-    loadAge(){
+
+    loadAge(event = null) {
+        if(event) event.preventDefault();
+        this.hideCharts();
+        this.$ageCanvas.classList.remove('hidden');
+        this.$ageTab.parentElement.classList.add('active');
         const data = {
-            datasets : [{
-                data : this.statisticsData.age,
+            datasets: [{
+                data: this.statisticData.age,
                 backgroundColor:[
-                    'rgba(255,99,132,0.6)',
-                    'rgba(54,162,235,0.6)',
-                    'rgba(75,192,192,0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(255, 100, 29, 0.6)',
                 ],
-                borderColor :[
+                borderColor: [
+                    'white',
                     'white',
                     'white',
                     'white',
                 ]
             }],
-            labels:[
+            labels: [
                 '10-15 years',
                 '15-20 years',
                 '20-25 years',
+                '30> years'
             ]
         };
         new Chart(this.$ageCanvas,{
-            type:'pie',
+            type: 'pie',
             data,
         });
     }
-}
-window.addEventListener("load",() => {
-    new Status();
-})
 
+}
+
+window.addEventListener("load", () => {
+    new Status();
+});
