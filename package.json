@@ -10,7 +10,7 @@
   "author": "Zineeddine998",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "chart.js": "^2.6.0",
     "jquery": "^3.2.1",
     "toastr": "^2.1.2"
